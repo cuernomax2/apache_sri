@@ -1,0 +1,7 @@
+zone "albertocryptobro.com." {
+        type master;
+        file "/var/lib/bind/db.albertocryptobro.com";
+        allow-query {
+                any;
+        };
+};

@@ -1,0 +1,45 @@
+version: '3.9'
+services:
+  apache:  
+    container_name: asir_dns_apache 
+    image: php:7.4-apache
+    ports:
+    - '420:420'
+    volumes:  
+    - ./html:/var/www/html:ro
+    - ./apache/ConfApache:/etc/apache2
+
+    dns:
+      - 192.168.32.69
+
+    networks:
+      asir_dns_bind9:
+        ipv4_address: 192.168.32.61
+  
+  bind9:  
+    container_name: asir_dns_bind9  
+    image: internetsystemsconsortium/bind9:9.18
+    ports:
+      - 5300:53/udp
+      - 5300:53/tcp
+    volumes:
+    - ./DNS/config:/etc/bind
+    - ./DNS/zonas:/var/lib/bind
+    networks:
+      asir_dns_bind9:
+        ipv4_address: 192.168.32.69
+
+  asir_cliente:
+    container_name: asir_cliente_alpine
+    image: alpine 
+    stdin_open: true
+    tty: true 
+    dns:
+      - 192.168.32.69
+    networks:
+      asir_dns_bind9:
+        ipv4_address: 192.168.32.63
+    
+networks:
+  asir_dns_bind9:
+    external: true
